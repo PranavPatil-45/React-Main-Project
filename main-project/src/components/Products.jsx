@@ -1,6 +1,5 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { data } from "react-router";
 import ProductCard from "./ProductCard";
 import { toast } from "react-toastify";
 
@@ -10,7 +9,6 @@ const Products = () => {
   const [filter, setfilter] = useState(null);
   const [search, setsearch] = useState(null);
 
-  console.log(filter);
   const fetchedDataFromServer = async () => {
     setloading(true);
     try {
@@ -26,9 +24,6 @@ const Products = () => {
 
       setfetchData(res.data);
       setloading(false);
-      //       toast.success("Data Fetched Successful !", {
-      //   position: "bottom-right",
-      // });
     } catch (error) {
       console.log(error);
       toast.error("Data not Found!", {
@@ -42,37 +37,50 @@ const Products = () => {
   }, [filter, search]);
 
   return (
-    <div className="container mt-5">
-      <h1>Products</h1>
-      <div className="d-flex justify-content-end">
-        <input
-          type="text"
-          placeholder="Search....."
-          className="m-2 p-2"
-          style={{ height: "40px", width: "300px" }}
-          value={search || ""}
-          onChange={(e) => setsearch(e.target.value)}
-        />
+    <div className="container py-5">
+      <h2 className="text-center mb-4 fw-bold">🛍️ Our Products</h2>
 
-        <select
-          name=""
-          className="m-2"
-          style={{ height: "40px", width: "200px" }}
-          onChange={(e) => setfilter(e.target.value)}
-        >
-          <option value="">Select category</option>
-          <option value={"men's clothing"}>Men</option>
-          <option value={"women's clothing"}>Women</option>
-          <option value={"jewelery"}>jewelery </option>
-          <option value={"electronics"}>electronics</option>
-        </select>
+      {/* Search & Filter Section */}
+      <div className="row mb-4">
+        <div className="col-md-6 mb-2">
+          <input
+            type="text"
+            placeholder="🔎 Search products..."
+            className="form-control"
+            value={search || ""}
+            onChange={(e) => setsearch(e.target.value)}
+          />
+        </div>
+
+        <div className="col-md-6 mb-2">
+          <select
+            className="form-select"
+            onChange={(e) => setfilter(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            <option value={"men's clothing"}>👔 Men</option>
+            <option value={"women's clothing"}>👗 Women</option>
+            <option value={"jewelery"}>💍 Jewelry</option>
+            <option value={"electronics"}>📱 Electronics</option>
+          </select>
+        </div>
       </div>
 
-      <div className="d-flex justify-content-center flex-wrap">
+      {/* Products Grid */}
+      <div className="row g-4">
         {loading ? (
-          <h1 className="text-danger">Loading</h1>
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="mt-2 text-muted">Fetching products...</p>
+          </div>
         ) : (
-          fetchedData.map((el) => <ProductCard key={el.id} {...el} />)
+          fetchedData.map((el) => (
+            <div key={el.id} className="col-md-3 col-sm-6">
+              <ProductCard {...el} />
+            </div>
+          ))
         )}
       </div>
     </div>
@@ -80,4 +88,3 @@ const Products = () => {
 };
 
 export default Products;
-Products;
